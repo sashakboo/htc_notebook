@@ -1,0 +1,55 @@
+﻿<div class="input-group mb-3">
+  <div class="input-group-append">
+    <select class="form-control" id="filterEventTypeSelect">
+      <option value="0">Все</option>
+      <option value="1">Встреча</option>
+      <option value="2">Памятка</option>
+      <option value="3">Дело</option>
+    </select>
+  </div>
+  <input type="text" class="form-control" placeholder="Текст" aria-label="Текст" aria-describedby="basic-addon2" id="filterEventText">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" id="filterSubmit">Фильтр</button>
+  </div>
+</div>
+
+<div id="calendarEventsContainer"></div>
+<!-- Модалки -->
+<div class="modal fade" id="editEvent" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body" id="editEventContent">
+        
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" id="appointment_update">Сохранить</button>
+        <button type="button" class="btn btn-danger" id="appointment_delete">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="selectEventType" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="control-label">Выберите тип</label>
+          <select class="form-control" id="eventTypeSelect">
+            <option value="1">Встреча</option>
+            <option value="2">Памятка</option>
+            <option value="3">Дело</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" id="eventTypeSelected">Продолжить</button>
+      </div>
+    </div>
+  </div>
+</div>
