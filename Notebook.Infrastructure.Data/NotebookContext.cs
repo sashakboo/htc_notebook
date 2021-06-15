@@ -22,7 +22,7 @@ namespace Notebook.Infrastructure.Data
     public NotebookContext(DbContextOptions<NotebookContext> options)
       : base(options)
     {
-      Database.EnsureCreated();
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

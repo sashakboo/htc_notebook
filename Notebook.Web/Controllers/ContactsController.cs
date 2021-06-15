@@ -21,6 +21,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: Contacts
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
       var contacts = _context.Contacts.Select(x => Utils.Mapper.ToContactIndexItem(x));
@@ -31,6 +32,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: Contacts/Create
+    [HttpGet]
     public IActionResult Create()
     {
       return PartialView();

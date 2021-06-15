@@ -10,6 +10,7 @@ namespace Notebook.Web.Controllers
   public class HomeController : Controller
   {
     // GET: /Home/Error
+    [HttpGet]
     public ActionResult Error()
     {
       return View();

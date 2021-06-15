@@ -22,12 +22,14 @@ namespace Notebook.Web.Controllers
       dbContext = context;
     }
 
+    [HttpGet]
     public ActionResult Index()
     {
       return View();
     }
 
     // GET: CalendarEvents
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<CalendarEventIndexItem>>> GetFiltered(DateTime? from, DateTime? to, CalendarEventType? eventType, string text)
     {
       var events = dbContext.CalendarEvents.AsNoTracking().AsQueryable();
@@ -66,6 +68,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/CreateMeeting
+    [HttpGet]
     public IActionResult CreateMeeting()
     {
       return PartialView();
@@ -95,6 +98,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/CreateMemo
+    [HttpGet]
     public IActionResult CreateMemo()
     {
       return PartialView();
@@ -122,6 +126,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/CreateWork
+    [HttpGet]
     public IActionResult CreateWork()
     {
       return PartialView();
@@ -149,6 +154,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/EditMeeting/5
+    [HttpGet]
     public async Task<IActionResult> EditMeeting(int? id)
     {
       if (id == null)
@@ -215,6 +221,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/EditMemo/5
+    [HttpGet]
     public async Task<IActionResult> EditMemo(int? id)
     {
       if (id == null)
@@ -278,6 +285,7 @@ namespace Notebook.Web.Controllers
     }
 
     // GET: CalendarEvents/EditWork/5
+    [HttpGet]
     public async Task<IActionResult> EditWork(int? id)
     {
       if (id == null)
@@ -343,6 +351,7 @@ namespace Notebook.Web.Controllers
     }
 
     // POST: CalendarEvents/Delete/5
+    [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
       var calendarEvent = await dbContext.CalendarEvents.FindAsync(id);
