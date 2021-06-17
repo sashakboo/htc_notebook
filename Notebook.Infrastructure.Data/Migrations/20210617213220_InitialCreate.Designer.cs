@@ -10,7 +10,7 @@ using Notebook.Infrastructure.Data;
 namespace Notebook.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(NotebookContext))]
-    [Migration("20210614180248_InitialCreate")]
+    [Migration("20210617213220_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,13 +100,14 @@ namespace Notebook.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContactId");
 
-                    b.ToTable("ContactInfos");
+                    b.ToTable("ContactInfo");
                 });
 
             modelBuilder.Entity("Notebook.Calendar.Domain.CalendarEvents.Meeting", b =>
@@ -121,12 +122,16 @@ namespace Notebook.Infrastructure.Data.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
+                    b.ToTable("CalendarEvents");
+
                     b.HasDiscriminator().HasValue("Meeting");
                 });
 
             modelBuilder.Entity("Notebook.Calendar.Domain.CalendarEvents.Memo", b =>
                 {
                     b.HasBaseType("Notebook.Calendar.Domain.CalendarEvents.CalendarEvent");
+
+                    b.ToTable("CalendarEvents");
 
                     b.HasDiscriminator().HasValue("Memo");
                 });
@@ -138,6 +143,8 @@ namespace Notebook.Infrastructure.Data.Migrations
                     b.Property<DateTime>("DateEnd")
                         .HasColumnType("datetime2")
                         .HasColumnName("Work_DateEnd");
+
+                    b.ToTable("CalendarEvents");
 
                     b.HasDiscriminator().HasValue("Work");
                 });

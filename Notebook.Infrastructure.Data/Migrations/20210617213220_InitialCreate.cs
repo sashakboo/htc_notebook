@@ -45,20 +45,20 @@ namespace Notebook.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContactInfos",
+                name: "ContactInfo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ContactId = table.Column<int>(type: "int", nullable: true),
                     ContactType = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContactInfos", x => x.Id);
+                    table.PrimaryKey("PK_ContactInfo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContactInfos_Contacts_ContactId",
+                        name: "FK_ContactInfo_Contacts_ContactId",
                         column: x => x.ContactId,
                         principalTable: "Contacts",
                         principalColumn: "Id",
@@ -66,8 +66,8 @@ namespace Notebook.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactInfos_ContactId",
-                table: "ContactInfos",
+                name: "IX_ContactInfo_ContactId",
+                table: "ContactInfo",
                 column: "ContactId");
         }
 
@@ -77,7 +77,7 @@ namespace Notebook.Infrastructure.Data.Migrations
                 name: "CalendarEvents");
 
             migrationBuilder.DropTable(
-                name: "ContactInfos");
+                name: "ContactInfo");
 
             migrationBuilder.DropTable(
                 name: "Contacts");

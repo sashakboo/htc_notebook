@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Notebook.Calendar.Domain.CalendarEvents;
 using Notebook.Contacts.Domain;
+using Notebook.Infrastructure.Data.Config;
 
 namespace Notebook.Infrastructure.Data
 {
@@ -29,36 +30,12 @@ namespace Notebook.Infrastructure.Data
     {
       base.OnModelCreating(modelBuilder);
 
-      #region CalendarEvents
-      modelBuilder.Entity<CalendarEvent>().Property(x => x.Subject)
-        .IsRequired()
-        .HasMaxLength(120);
-      modelBuilder.Entity<CalendarEvent>().Property(x => x.DateStart)
-        .IsRequired();
-      modelBuilder.Entity<CalendarEvent>().Property(x => x.Done)
-        .IsRequired();
-      modelBuilder.Entity<Meeting>().Property(x => x.DateEnd)
-        .IsRequired();
-      modelBuilder.Entity<Meeting>().Property(x => x.Place)
-        .IsRequired()
-        .HasMaxLength(120);
-     modelBuilder.Entity<Work>().Property(x => x.DateEnd)
-        .IsRequired();
-      #endregion
-
-      #region Contacts
-      modelBuilder.Entity<Contact>().Property(x => x.Name)
-        .IsRequired()
-        .HasMaxLength(50);
-      modelBuilder.Entity<Contact>().Property(x => x.MiddleName)
-        .HasMaxLength(50);
-      modelBuilder.Entity<Contact>().Property(x => x.Surname)
-        .HasMaxLength(50);
-      modelBuilder.Entity<Contact>().Property(x => x.Company)
-        .HasMaxLength(50);
-      modelBuilder.Entity<Contact>().Property(x => x.Position)
-        .HasMaxLength(50);
-      #endregion
+      modelBuilder.ApplyConfiguration(new MeetingConfiguration());
+      modelBuilder.ApplyConfiguration(new WorkConfiguration());
+      modelBuilder.ApplyConfiguration(new MemoConfiguration());
+      modelBuilder.ApplyConfiguration(new ContactConfiguration());
+      modelBuilder.ApplyConfiguration(new ContactInfoConfiguration());
     }
   }
 }
+
