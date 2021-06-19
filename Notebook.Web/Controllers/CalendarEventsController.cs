@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Notebook.Infrastructure.Data;
-using CalendarEventsModel = Notebook.Calendar.Domain.CalendarEvents;
-using Notebook.Web.Models.CalendarEvents;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using Notebook.Infrastructure.Data;
+using Notebook.Web.Models.CalendarEvents;
+using Notebook.Calendar.Domain.CalendarEvents;
 
 namespace Notebook.Web.Controllers
 {
   public class CalendarEventsController : Controller
   {
-    private NotebookContext dbContext;
+    private readonly NotebookContext _context;
 
-    public CalendarEventsController(NotebookContext context)
+    private readonly IMapper _mapper;
+
+    public CalendarEventsController(NotebookContext context, IMapper mapper)
     {
-      dbContext = context;
+      _context = context;
+      _mapper = mapper;
     }
 
     [HttpGet]
@@ -28,11 +29,11 @@ namespace Notebook.Web.Controllers
       return View();
     }
 
-    // GET: CalendarEvents
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CalendarEventIndexItem>>> GetFiltered(DateTime? from, DateTime? to, CalendarEventType? eventType, string text)
+    public async Task<ActionResult<IEnumerable<CalendarEventIndexItem>>> GetFiltered(
+      DateTime? from, DateTime? to, CalendarEventType? eventType, string text)
     {
-      var events = dbContext.CalendarEvents.AsNoTracking().AsQueryable();
+      var events = _context.CalendarEvents.AsNoTracking().AsQueryable();
 
       if (from.HasValue)
         events = events.Where(x => x.DateStart >= from);
@@ -43,13 +44,13 @@ namespace Notebook.Web.Controllers
         switch (eventType.Value)
         {
           case CalendarEventType.Meeting:
-            events = events.Where(x => x is CalendarEventsModel.Meeting);
+            events = events.Where(x => x is Meeting);
             break;
           case CalendarEventType.Memo:
-            events = events.Where(x => x is CalendarEventsModel.Memo);
+            events = events.Where(x => x is Memo);
             break;
           case CalendarEventType.Work:
-            events = events.Where(x => x is CalendarEventsModel.Work);
+            events = events.Where(x => x is Work);
             break;
           default:
             break;
@@ -60,100 +61,69 @@ namespace Notebook.Web.Controllers
       {
         events = events.Where(x => 
                               x.Subject.Contains(text) || 
-                              (x is CalendarEventsModel.Meeting
-                                && (x as CalendarEventsModel.Meeting).Place.Contains(text)));
+                              (x is Meeting
+                                && (x as Meeting).Place.Contains(text)));
       }
 
-      return await events.Select(x => Utils.Mapper.ToCalendarEventViewModel(x)).ToListAsync();
+      return await events.Select(x => _mapper.Map<CalendarEventIndexItem>(x)).ToListAsync();
     }
 
-    // GET: CalendarEvents/CreateMeeting
     [HttpGet]
     public IActionResult CreateMeeting()
     {
       return PartialView();
     }
 
-    // POST: CalendarEvents/CreateMeeting
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateMeeting([FromForm] MeetingViewModel meeting)
     {
       if (ModelState.IsValid)
       {
-        var meetingModel = new CalendarEventsModel.Meeting() 
-        {
-          DateStart = meeting.DateStart,
-          DateEnd = meeting.DateEnd,
-          Subject = meeting.Subject,
-          Place = meeting.Place,
-          Done = meeting.Done
-        };
-
-        dbContext.Add(meetingModel);
-        await dbContext.SaveChangesAsync();
-        return Ok(meetingModel);
+        _context.Add(_mapper.Map<Meeting>(meeting));
+        await _context.SaveChangesAsync();
+        return Ok(meeting);
       }
       return BadRequest(ModelState);
     }
 
-    // GET: CalendarEvents/CreateMemo
     [HttpGet]
     public IActionResult CreateMemo()
     {
       return PartialView();
     }
 
-    // POST: CalendarEvents/CreateMemo
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateMemo([FromForm] MemoViewModel memo)
     {
       if (ModelState.IsValid)
       {
-        var memoModel = new CalendarEventsModel.Memo()
-        {
-          DateStart = memo.DateStart,
-          Subject = memo.Subject,
-          Done = memo.Done
-        };
-
-        dbContext.Add(memoModel);
-        await dbContext.SaveChangesAsync();
-        return Ok(memoModel);
+        _context.Add(_mapper.Map<Memo>(memo));
+        await _context.SaveChangesAsync();
+        return Ok(memo);
       }
       return BadRequest(ModelState);
     }
 
-    // GET: CalendarEvents/CreateWork
     [HttpGet]
     public IActionResult CreateWork()
     {
       return PartialView();
     }
 
-    // POST: CalendarEvents/CreateWork
     [HttpPost]
     public async Task<IActionResult> CreateWork([FromForm] WorkViewModel work)
     {
       if (ModelState.IsValid)
       {
-        var workModel = new CalendarEventsModel.Work()
-        {
-          DateStart = work.DateStart,
-          DateEnd = work.DateEnd,
-          Subject = work.Subject,
-          Done = work.Done
-        };
-
-        dbContext.Add(workModel);
-        await dbContext.SaveChangesAsync();
-        return Ok(workModel);
+        _context.Add(_mapper.Map<Work>(work));
+        await _context.SaveChangesAsync();
+        return Ok(work);
       }
       return BadRequest(ModelState);
     }
 
-    // GET: CalendarEvents/EditMeeting/5
     [HttpGet]
     public async Task<IActionResult> EditMeeting(int? id)
     {
@@ -162,22 +132,14 @@ namespace Notebook.Web.Controllers
         return NotFound();
       }
 
-      var meeting = await dbContext.Meetings.FindAsync(id);
+      var meeting = await _context.Meetings.FindAsync(id);
       if (meeting == null)
       {
         return NotFound();
       }
-      return PartialView(new MeetingViewModel() { 
-        Id = meeting.Id,
-        DateStart = meeting.DateStart,
-        DateEnd = meeting.DateEnd,
-        Subject = meeting.Subject,
-        Place = meeting.Place,
-        Done = meeting.Done
-      });
+      return PartialView(_mapper.Map<MeetingViewModel>(meeting));
     }
 
-    // POST: CalendarEvents/EditMeeting/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditMeeting(int id, [FromForm] MeetingViewModel meeting)
@@ -191,22 +153,12 @@ namespace Notebook.Web.Controllers
       {
         try
         {
-          var meetingModel = new CalendarEventsModel.Meeting()
-          {
-            Id = meeting.Id,
-            DateStart = meeting.DateStart,
-            DateEnd = meeting.DateEnd,
-            Subject = meeting.Subject,
-            Place = meeting.Place,
-            Done = meeting.Done
-          };
-
-          dbContext.Update(meetingModel);
-          await dbContext.SaveChangesAsync();
+          _context.Update(_mapper.Map<Meeting>(meeting));
+          await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-          if (!dbContext.Meetings.Any(e => e.Id == id))
+          if (!_context.Meetings.Any(e => e.Id == id))
           {
             return NotFound();
           }
@@ -220,7 +172,6 @@ namespace Notebook.Web.Controllers
       return BadRequest(ModelState);
     }
 
-    // GET: CalendarEvents/EditMemo/5
     [HttpGet]
     public async Task<IActionResult> EditMemo(int? id)
     {
@@ -229,21 +180,14 @@ namespace Notebook.Web.Controllers
         return NotFound();
       }
 
-      var memo = await dbContext.Memos.FindAsync(id);
+      var memo = await _context.Memos.FindAsync(id);
       if (memo == null)
       {
         return NotFound();
       }
-      return PartialView(new MemoViewModel()
-      {
-        Id = memo.Id,
-        DateStart = memo.DateStart,
-        Subject = memo.Subject,
-        Done = memo.Done
-      });
+      return PartialView(_mapper.Map<MemoViewModel>(memo));
     }
 
-    // POST: CalendarEvents/EditMemo/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditMemo(int id, [FromForm] MemoViewModel memo)
@@ -257,20 +201,12 @@ namespace Notebook.Web.Controllers
       {
         try
         {
-          var memoModel = new CalendarEventsModel.Meeting()
-          {
-            Id = memo.Id,
-            DateStart = memo.DateStart,
-            Subject = memo.Subject,
-            Done = memo.Done
-          };
-
-          dbContext.Update(memoModel);
-          await dbContext.SaveChangesAsync();
+          _context.Update(_mapper.Map<Memo>(memo));
+          await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-          if (!dbContext.Memos.Any(e => e.Id == id))
+          if (!_context.Memos.Any(e => e.Id == id))
           {
             return NotFound();
           }
@@ -284,7 +220,6 @@ namespace Notebook.Web.Controllers
       return BadRequest(ModelState);
     }
 
-    // GET: CalendarEvents/EditWork/5
     [HttpGet]
     public async Task<IActionResult> EditWork(int? id)
     {
@@ -293,22 +228,14 @@ namespace Notebook.Web.Controllers
         return NotFound();
       }
 
-      var work = await dbContext.Works.FindAsync(id);
+      var work = await _context.Works.FindAsync(id);
       if (work == null)
       {
         return NotFound();
       }
-      return PartialView(new WorkViewModel()
-      {
-        Id = work.Id,
-        DateStart = work.DateStart,
-        DateEnd = work.DateEnd,
-        Subject = work.Subject,
-        Done = work.Done
-      });
+      return PartialView(_mapper.Map<WorkViewModel>(work));
     }
 
-    // POST: CalendarEvents/EditMemo/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditWork(int id, [FromForm] WorkViewModel work)
@@ -322,21 +249,12 @@ namespace Notebook.Web.Controllers
       {
         try
         {
-          var workModel = new CalendarEventsModel.Work()
-          {
-            Id = work.Id,
-            DateStart = work.DateStart,
-            DateEnd = work.DateEnd,
-            Subject = work.Subject,
-            Done = work.Done
-          };
-
-          dbContext.Update(workModel);
-          await dbContext.SaveChangesAsync();
+          _context.Update(_mapper.Map<Work>(work));
+          await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-          if (!dbContext.Works.Any(e => e.Id == id))
+          if (!_context.Works.Any(e => e.Id == id))
           {
             return NotFound();
           }
@@ -350,13 +268,12 @@ namespace Notebook.Web.Controllers
       return BadRequest(ModelState);
     }
 
-    // POST: CalendarEvents/Delete/5
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-      var calendarEvent = await dbContext.CalendarEvents.FindAsync(id);
-      dbContext.CalendarEvents.Remove(calendarEvent);
-      await dbContext.SaveChangesAsync();
+      var calendarEvent = await _context.CalendarEvents.FindAsync(id);
+      _context.CalendarEvents.Remove(calendarEvent);
+      await _context.SaveChangesAsync();
       return Ok();
     }
   }

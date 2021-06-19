@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Notebook.Contacts.Domain;
-using ContactViewModels = Notebook.Web.Models.Contacts;
 using Notebook.Infrastructure.Data;
+using Notebook.Web.Models.Contacts;
+using Notebook.Contacts.Domain;
 
 namespace Notebook.Web.Controllers
 {
@@ -15,47 +13,35 @@ namespace Notebook.Web.Controllers
   {
     private readonly NotebookContext _context;
 
-    public ContactsController(NotebookContext context)
+    private readonly IMapper _mapper;
+
+    public ContactsController(NotebookContext context, IMapper mapper)
     {
       _context = context;
+      _mapper = mapper;
     }
 
-    // GET: Contacts
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-      var contacts = _context.Contacts.Select(x => Utils.Mapper.ToContactIndexItem(x));
-
       return View(await _context.Contacts
-        .Select(x => Utils.Mapper.ToContactIndexItem(x))
+        .Select(x => _mapper.Map<ContactIndexItem>(x))
         .ToListAsync());
     }
 
-    // GET: Contacts/Create
     [HttpGet]
     public IActionResult Create()
     {
       return PartialView();
     }
 
-    // POST: Contacts/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([FromForm] ContactViewModels.ContactViewModel contact)
+    public async Task<IActionResult> Create([FromForm] ContactViewModel contact)
     {
       if (ModelState.IsValid)
       {
-        var contactModel = new Contact()
-        {
-          Id = contact.Id,
-          Name = contact.Name,
-          MiddleName = contact.MiddleName,
-          Surname = contact.Surname,
-          Birthday = contact.Birthday,
-          Company = contact.Company,
-          Position = contact.Position          
-        };
-        _context.Add(contactModel);
+        _context.Add(_mapper.Map<Contact>(contact));
         await _context.SaveChangesAsync();
         return Ok(contact);
       }

@@ -131,6 +131,7 @@ function createEvent(selectionInfo) {
   });
 }
 
+// FIXME: отправляется несколько GET запросов после выполнения POST.
 function editEvent(selectionInfo) {
   var event = selectionInfo.event;
   var eventConfig = calendarEventConfig(event.extendedProps.eventType);
@@ -169,7 +170,7 @@ function editEvent(selectionInfo) {
               $('#editEvent').modal('hide');
               document.getElementById("editEventContent").innerHTML = "";
 
-              showInfo("#calendarEventsContainer", "Изменено событие: " + newEvent.title);
+              showInfo("#calendarEventsContainer", "Изменено событие: " + event.title);
             }).fail(function (err) {
               showError("#editEventContent", err);
             });
