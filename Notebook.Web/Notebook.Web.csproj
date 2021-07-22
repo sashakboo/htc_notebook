@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Notebook.Calendar.Domain\Notebook.Calendar.Domain.csproj" />
     <ProjectReference Include="..\Notebook.Contacts.Domain\Notebook.Contacts.Domain.csproj" />
-    <ProjectReference Include="..\Notebook.Infrastructure.Data\Notebook.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Notebook.Infrastructure.Data\Notebook.EF.csproj" />
   </ItemGroup>
 
 </Project>

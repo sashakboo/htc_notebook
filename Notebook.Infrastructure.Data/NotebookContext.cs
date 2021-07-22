@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Notebook.Calendar.Domain.CalendarEvents;
+using Notebook.Calendar.Domain;
 using Notebook.Contacts.Domain;
 using Notebook.Infrastructure.Data.Config;
 

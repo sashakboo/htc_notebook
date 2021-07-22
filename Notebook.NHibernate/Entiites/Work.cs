@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Notebook.Calendar.Domain
+namespace Notebook.NHibernate.Entities
 {
   public class Work : CalendarEvent
   {

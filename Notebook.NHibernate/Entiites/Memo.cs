@@ -1,4 +1,4 @@
-﻿namespace Notebook.Calendar.Domain
+﻿namespace Notebook.NHibernate.Entities
 {
   public class Memo : CalendarEvent
   {

@@ -25,6 +25,8 @@ namespace Notebook.Web
       string defaultConnection = Configuration.GetConnectionString("DefaultConnection");
       services.AddDbContext<NotebookContext>(x => x.UseSqlServer(defaultConnection));
 
+      services.AddScoped<Notebook.Calendar.Domain.ICalendarEventsRepository, CalendarRepository>();
+
       services.AddAutoMapper(typeof(MappingProfile));
     }
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Notebook.Calendar.Domain.CalendarEvents;
+using Notebook.Calendar.Domain;
 
 namespace Notebook.Infrastructure.Data.Config
 {

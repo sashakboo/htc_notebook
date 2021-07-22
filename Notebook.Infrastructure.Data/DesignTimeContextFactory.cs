@@ -12,7 +12,7 @@ namespace Notebook.Infrastructure.Data
     public NotebookContext CreateDbContext(string[] args)
     {
       var optionsBuilder = new DbContextOptionsBuilder<NotebookContext>();
-      optionsBuilder.UseSqlServer("Server=ACER;Database=NotebookCore;Trusted_Connection=True;");
+      optionsBuilder.UseSqlServer("Server=w608w10;Database=NotebookCore;Trusted_Connection=True;");
       return new NotebookContext(optionsBuilder.Options);
     }
     #endregion

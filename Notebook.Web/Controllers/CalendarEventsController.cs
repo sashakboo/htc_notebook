@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Infrastructure.Data;
 using Notebook.Web.Models.CalendarEvents;
-using Notebook.Calendar.Domain.CalendarEvents;
+using Notebook.Calendar.Domain;
 
 namespace Notebook.Web.Controllers
 {
@@ -15,11 +15,16 @@ namespace Notebook.Web.Controllers
   {
     private readonly NotebookContext _context;
 
+    private readonly ICalendarEventsRepository _repository;
+
     private readonly IMapper _mapper;
 
-    public CalendarEventsController(NotebookContext context, IMapper mapper)
+    public CalendarEventsController(NotebookContext context,
+                                    ICalendarEventsRepository repository,
+                                    IMapper mapper)
     {
       _context = context;
+      _repository = repository;
       _mapper = mapper;
     }
 
@@ -132,7 +137,7 @@ namespace Notebook.Web.Controllers
         return NotFound();
       }
 
-      var meeting = await _context.Meetings.FindAsync(id);
+      var meeting = await _repository.Get(id.Value); //await _context.Meetings.FindAsync(id);
       if (meeting == null)
       {
         return NotFound();

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Notebook.Calendar.Domain.CalendarEvents;
+using Notebook.Calendar.Domain;
 using Notebook.Contacts.Domain;
 using Notebook.Web.Models.CalendarEvents;
 using Notebook.Web.Models.Contacts;

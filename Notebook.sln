@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.Web", "Notebook.Web\Notebook.Web.csproj", "{B8674F4A-DAB0-4A33-8E5A-9DA8AE7290DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.Infrastructure.Data", "Notebook.Infrastructure.Data\Notebook.Infrastructure.Data.csproj", "{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.EF", "Notebook.Infrastructure.Data\Notebook.EF.csproj", "{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notebook.NHibernate", "Notebook.NHibernate\Notebook.NHibernate.csproj", "{E35460D1-96FE-4B64-A24C-7B009ECF59A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E35460D1-96FE-4B64-A24C-7B009ECF59A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E35460D1-96FE-4B64-A24C-7B009ECF59A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E35460D1-96FE-4B64-A24C-7B009ECF59A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E35460D1-96FE-4B64-A24C-7B009ECF59A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +51,7 @@ Global
 		{1AF0C4A6-8651-4906-BAC8-10AD05BA1B44} = {878BBBEA-C863-4638-AE7B-279E7C199047}
 		{A5AA7CE4-BAB4-42DF-8736-582422873355} = {878BBBEA-C863-4638-AE7B-279E7C199047}
 		{753315FD-E3B2-4A4E-9B07-32AA1DCFA6A0} = {2F9412A7-2A2C-4B27-A750-D002BB2E4C16}
+		{E35460D1-96FE-4B64-A24C-7B009ECF59A0} = {2F9412A7-2A2C-4B27-A750-D002BB2E4C16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DFB50DF-6B58-4AE7-980A-E2583199E358}
